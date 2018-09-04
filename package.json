@@ -9,6 +9,7 @@
   "author": "karthik",
   "license": "ISC",
   "dependencies": {
+    "async": "^2.6.1",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "connect-mongo": "^2.0.1",
