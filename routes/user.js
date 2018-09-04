@@ -3,6 +3,7 @@ var User = require('../models/user');
 var passport = require('passport');
 var passportConf = require('../config/passport');
 
+
 router.get('/login', function (req, res) {
     if (req.user) return res.redirect('/');
     res.render('accounts/login', {
@@ -25,7 +26,10 @@ router.get('/profile', function (req, res, next) {
         res.render('accounts/profile', {
             user: user
         });
+
     });
+
+
 });
 
 router.get('/signup', function (req, res, next) {
