@@ -52,8 +52,8 @@ mongoose.connect(secret.database, function (err) {
 
 
 // managing routes
-// var mainRoutes = require('./routes/main');
+var mainRoutes = require('./routes/main');
 var userRoutes = require('./routes/user');
 
-// app.use(mainRoutes);
+app.use(mainRoutes);
 app.use(userRoutes);
