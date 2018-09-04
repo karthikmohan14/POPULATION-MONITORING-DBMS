@@ -8,10 +8,13 @@ var ejsmate = require('ejs-mate');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var flash = require('express-flash');
-var secret = require('./config/secret');
+var MongoStore = require('connect-mongo')(session);
+var passport = require('passport');
+
 var app = express();
 
-//managing middleware
+var secret = require('./config/secret');
+
 app.use(express.static(__dirname + '/public'));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
@@ -22,26 +25,30 @@ app.use(cookieParser());
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: secret.secretKey
+    secret: secret.secretKey,
+    store: new MongoStore({
+        url: secret.database,
+        autoReconnect: true
+    })
 }));
 app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(function (req, res, next) {
+    res.locals.user = req.user;
+    next();
+});
 
-
-// managing viewengine
 app.engine('ejs', ejsmate);
 app.set('view engine', 'ejs');
 
-
-// managing server
-app.listen(3000, function (err) {
+app.listen(secret.port, function (err) {
     if (err) {
         throw err;
     }
-    console.log("server is running");
+    console.log("server is running on port : " + secret.port);
 });
 
-
-// managing database
 mongoose.connect(secret.database, function (err) {
     if (err) {
         console.log(err);
@@ -50,8 +57,6 @@ mongoose.connect(secret.database, function (err) {
     }
 });
 
-
-// managing routes
 var mainRoutes = require('./routes/main');
 var userRoutes = require('./routes/user');
 
